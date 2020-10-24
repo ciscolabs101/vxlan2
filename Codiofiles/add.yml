@@ -1,0 +1,18 @@
+speed: 10
+lines:
+- prompt: #
+ in: ip add 
+- out: '18: vlan10: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000'
+- out: '   link/ether a2:df:3d:8b:74:6c brd ff:ff:ff:ff:ff:ff'
+- out: '   inet 10.10.10.1/24 brd 10.10.10.255 scope global vlan10'
+- out: '      valid_lft forever preferred_lft forever'
+- out: '   inet6 fe80::a0df:3dff:fe8b:746c/64 scope link'
+- out: '      valid_lft forever preferred_lft forever'
+
+
+    
+    
+       
+     
+       
+
