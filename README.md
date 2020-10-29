@@ -67,7 +67,7 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
 	
 	## CHECKING ! 
 	 
-	 - ip addresses configuration on 'switch' :
+       - ip addresses configuration on 'switch' :
 	 
 	 > ` # ip add `
 	 
@@ -89,12 +89,52 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
        valid_lft forever preferred_lft forever
     inet6 fe80::1c81:60ff:fe2a:f380/64 scope link 
        valid_lft forever preferred_lft forever ```
-	 
+       
+       - OpenVSwitch show result :
+       
+       > ` # show ovs-vsctl show `
+       
+       output 
+       
+       ``` 5d1e1cf-ac2d-42c2-8cf3-bb4d33410d06
+    Bridge switch
+        Port vlan10
+            tag: 10
+            Interface vlan10
+                type: internal
+        Port switch
+            Interface switch
+                type: internal
+        Port vlan1
+            tag: 1
+            Interface vlan1
+                type: internal
+        Port vlan20
+            tag: 20
+            Interface vlan20
+                type: internal
+    ovs_version: "2.13.0"```
 
+	
+	
+	- OpenVSwitch list ports result : 
+	
+	> ` # ovs-vsctl list-ports ` 
+	
+	output 
+	
+	``` vlan1
+              vlan10
+              vlan20 ```
 
-	
-	
-	
+       - Docker Container list instances : 
+        
+        > ` # docker ps ` 
+        
+        output 
+        
+        ``` CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+fd48f573b88a        ultron/nginx          "/docker-entrypoint.…"   12 minutes ago      Up 12 minutes             ```
 
 
 
