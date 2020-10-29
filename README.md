@@ -71,24 +71,26 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
 	 
 	 > ` # ip add `
 	 
-	 ``` 18: vlan10: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/ether a2:df:3d:8b:74:6c brd ff:ff:ff:ff:ff:ff
-    inet 10.10.10.1/24 brd 10.10.10.255 scope global vlan10
-       valid_lft forever preferred_lft forever
-    inet6 fe80::a0df:3dff:fe8b:746c/64 scope link 
-       valid_lft forever preferred_lft forever
-19: vlan20: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/ether c6:92:23:07:86:a7 brd ff:ff:ff:ff:ff:ff
-    inet 10.10.20.1/24 brd 10.10.20.255 scope global vlan20
-       valid_lft forever preferred_lft forever
-    inet6 fe80::c492:23ff:fe07:86a7/64 scope link 
-       valid_lft forever preferred_lft forever
-20: vlan1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/ether 1e:81:60:2a:f3:80 brd ff:ff:ff:ff:ff:ff
-    inet 1.1.1.1/24 brd 1.1.1.255 scope global vlan1
-       valid_lft forever preferred_lft forever
-    inet6 fe80::1c81:60ff:fe2a:f380/64 scope link 
-       valid_lft forever preferred_lft forever ```
+	 output
+	 
+	    18: vlan10: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+                 link/ether a2:df:3d:8b:74:6c brd ff:ff:ff:ff:ff:ff
+                 inet 10.10.10.1/24 brd 10.10.10.255 scope global vlan10
+                     valid_lft forever preferred_lft forever
+                 inet6 fe80::a0df:3dff:fe8b:746c/64 scope link 
+                     valid_lft forever preferred_lft forever
+             19: vlan20: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+                 link/ether c6:92:23:07:86:a7 brd ff:ff:ff:ff:ff:ff
+                 inet 10.10.20.1/24 brd 10.10.20.255 scope global vlan20
+                     valid_lft forever preferred_lft forever
+                 inet6 fe80::c492:23ff:fe07:86a7/64 scope link 
+                     valid_lft forever preferred_lft forever
+             20: vlan1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+                 link/ether 1e:81:60:2a:f3:80 brd ff:ff:ff:ff:ff:ff
+                 inet 1.1.1.1/24 brd 1.1.1.255 scope global vlan1
+                     valid_lft forever preferred_lft forever
+                 inet6 fe80::1c81:60ff:fe2a:f380/64 scope link 
+                     valid_lft forever preferred_lft forever ```
 	 
 
 
