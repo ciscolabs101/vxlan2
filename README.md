@@ -90,7 +90,7 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
                  inet 1.1.1.1/24 brd 1.1.1.255 scope global vlan1
                      valid_lft forever preferred_lft forever
                  inet6 fe80::1c81:60ff:fe2a:f380/64 scope link 
-                     valid_lft forever preferred_lft forever ```
+                     valid_lft forever preferred_lft forever 
 	 
 
 
