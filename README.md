@@ -48,28 +48,28 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
 
 	* Setup Bridge instance "switch" ( OpenVSwitch instance ) : 
 	
-	> ` # ovs-vsctl add-br switch `
+	> ` hq# ovs-vsctl add-br switch `
 	
 	* Setup Nginx Web server "webserver"  ( docker container instances ) :
 	
-	> ` # docker run --name webserver --net none -P -d ultron11/nginx  `
+	> ` hq# docker run --name webserver --net none -P -d ultron11/nginx  `
 	
 	* Setup VLANs interfaces on bridge instance as gateway ( vlan1 : 10.10.10.0/24 and vlan2 : 10.1020.0/24 ) :
-	> ` # ovs-vsctl add-port switch vlan10 tag=10 -- set interface vlan10 type=internal`
-	> ` # ovs-vsctl add-port switch vlan20 tag=20 -- set interface vlan20 type=internal`
+	> ` hq# ovs-vsctl add-port switch vlan10 tag=10 -- set interface vlan10 type=internal`
+	> ` hq# ovs-vsctl add-port switch vlan20 tag=20 -- set interface vlan20 type=internal`
 	* Setup link between "switch" and "webserver" ( 1.1.1.0/30) :
-	> ` # ovs-vsctl add-port switch vlan1 tag=1 -- set interface vlan1 type=internal`
+	> ` hq# ovs-vsctl add-port switch vlan1 tag=1 -- set interface vlan1 type=internal`
 	* Configuration of VLAN1 interface in netplan file.
 	* Setup web server on the link : 
-	> ` # ovs-docker add-port switch eth1 webserver --ipaddress=1.1.1.2/24 --gateway=1.1.1.1`
-	> ` # ovs-docker set-vlan switch eth1 webserver 1`
+	> ` hq# ovs-docker add-port switch eth1 webserver --ipaddress=1.1.1.2/24 --gateway=1.1.1.1`
+	> ` hq# ovs-docker set-vlan switch eth1 webserver 1`
 	
 	
 	## CHECKING ! 
 	 
        - ip addresses configuration on 'switch' :
 	 
-	 > ` # ip add `
+	 > ` hq# ip add `
 	 
 	 ``` 18: vlan10: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
     link/ether a2:df:3d:8b:74:6c brd ff:ff:ff:ff:ff:ff
@@ -92,7 +92,7 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
        
        - OpenVSwitch show result :
        
-       > ` # show ovs-vsctl show `
+       > ` hq# show ovs-vsctl show `
        
        output 
        
@@ -119,7 +119,7 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
 	
 	- OpenVSwitch list ports result : 
 	
-	> ` # ovs-vsctl list-ports ` 
+	> ` hq# ovs-vsctl list-ports ` 
 	
 	output 
 	
@@ -129,7 +129,7 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
 
        - Docker Container list instances : 
         
-        > ` # docker ps ` 
+        > ` hq# docker ps ` 
         
         output 
         
@@ -137,8 +137,231 @@ Obvisiouly 'cause i'm DCU Comics fan and ...
 fd48f573b88a        ultron/nginx          "/docker-entrypoint.…"   12 minutes ago      Up 12 minutes             ```
 
 
+   - Building of LAN infrastructure on Branch : 
+        
+       - Setup Bridge instance "switch" ( OpenVSwitch instance ) :
+       > ` branch# ovs-vsctl add-br switch `
+       - Setup client1,client2, client2 and client4 ( docker container instances ) :
+        
+       > ` branch# docker run -it --name client1 --net none gns3/ipterm`
+       > ` branch# exit`
+       > ` branch# docker run -it --name client2 --net none gns3/ipterm`
+       > ` branch# exit`
+       > ` branch# docker run -it --name client3 --net none gns3/ipterm`
+       > ` branch# exit`
+       > ` branch# docker run -it --name client4 --net none gns3/ipterm`
+       > ` branch# exit`
+       > ` branch# docker start client1 client2 client3 client4 `
+    
+    - Attach client1 et client2 to vlan 10 and address assignement : 
+    
+       > ` branch# ovs-docker add-port switch eth1 client1 --ipaddress=10.10.10.2/24 --gateway=10.10.10.1`
+       > ` branch# ovs-docker set-vlan switch eth1 client1 10`
+       > ` branch# ovs-docker add-port switch eth1 client2 --ipaddress=10.10.10.3/24 --gateway=10.10.10.1`
+       > ` branch# ovs-docker set-vlan switch eth1 client2 10`
+       
+    - Attach client3 et client4 to vlan 20 and address assignement : 
+    
+       > ` branch# ovs-docker add-port switch eth1 client3 --ipaddress=10.10.20.2/24 --gateway=10.10.20.1`
+       > ` branch# ovs-docker set-vlan switch eth1 client3 20`
+       > ` branch# ovs-docker add-port switch eth1 client4 --ipaddress=10.10.20.3/24 --gateway=10.10.20.1`
+       > ` branch# ovs-docker set-vlan switch eth1 client4 20`
+       
 
+## CHECKING ! 
+
+   Whether docker container instances are up : 
+   
+   > ` branch# docker ps`
+   
+   output : 
+   
+   ``` CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+8913de0d2430        gns3/ipterm           "sh -c 'cd; exec bas…"   5 minutes ago       Up 5 minutes                                                         client4
+e32d6838c472        gns3/ipterm           "sh -c 'cd; exec bas…"   5 minutes ago       Up 5 minutes                                                         client3
+26350bbfe178        gns3/ipterm           "sh -c 'cd; exec bas…"   6 minutes ago       Up 5 minutes                                                         client2
+0f5ca9c1cb34        gns3/ipterm           "sh -c 'cd; exec bas…"   9 minutes ago       Up 5 minutes                                                         client1 ```
+
+   Whether vlan10 broadcast domain works ( client1 ping client2 ) : 
+
+   > ` branch# docker exec -it client1 bash` 
+   
+   > ` client1# ping -c4 10.10.10.3`
+     
+    output : 
+    
+      PING 10.10.10.3 (10.10.10.3) 56(84) bytes of data.
+      64 bytes from 10.10.10.3: icmp_seq=1 ttl=64 time=2.22 ms
+      64 bytes from 10.10.10.3: icmp_seq=2 ttl=64 time=0.132 ms
+      64 bytes from 10.10.10.3: icmp_seq=3 ttl=64 time=0.126 ms
+      64 bytes from 10.10.10.3: icmp_seq=4 ttl=64 time=0.249 ms
+
+           --- 10.10.10.3 ping statistics ---
+      4 packets transmitted, 4 received, 0% packet loss, time 3043ms
+      rtt min/avg/max/mdev = 0.126/0.681/2.220/0.890 ms
  
+ 
+   Whether routing works ( client1 ping client4 ):
+   
+   > `client# ping -c4 10.10.20.3`
+       
+   output : 
+   
+      PING 10.10.20.3 (10.10.20.3) 56(84) bytes of data.
+       From 10.10.10.2 icmp_seq=1 Destination Host Unreachable
+       From 10.10.10.2 icmp_seq=2 Destination Host Unreachable
+       From 10.10.10.2 icmp_seq=3 Destination Host Unreachable
+       From 10.10.10.2 icmp_seq=4 Destination Host Unreachable
+
+             --- 10.10.20.3 ping statistics ---
+     4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 3074ms
+     pipe 4
+   
+  
+   Ports connected to th switch : 
+    
+   > ` branch# ovs-vsctl list-ports switch` 
+    
+    output : 
+
+	7d8dc0e0b8a94_l
+	b79e5c6d4ba74_l
+	cfd7366b9d094_l
+	d598773a8d824_l
+
+    
+  Show command 'switch' :
+  
+   > `branch# ovs-vsctl show`
+   
+  output :
+  
+    5d1e1cf-ac2d-42c2-8cf3-bb4d33410d06
+    Bridge switch
+        Port "7d8dc0e0b8a94_l"
+            tag: 10
+            Interface "7d8dc0e0b8a94_l"
+        Port cfd7366b9d094_l
+            tag: 20
+            Interface cfd7366b9d094_l
+        Port d598773a8d824_l
+            tag: 10
+            Interface d598773a8d824_l
+        Port b79e5c6d4ba74_l
+            tag: 20
+            Interface b79e5c6d4ba74_l
+        Port switch
+            Interface switch
+                type: internal
+                
+        ovs_version: "2.13.0"
+  
+  
+## 3) STEP 3 :   
+
+- Setup VXLAN tunnel 
+                        "HQ ---------------- Branch" 
+                        
+   > `hq# ovs-vsctl add-port switch vx1 -- set interface vx1 type=vxlan options:remote_ip=172.16.2.3 `
+   
+   >`branch# ovs-vsctl add-port switch vx1 -- set interface vx1 type=vxlan options:remote_ip=172.16.1.3`
+   
+## CHECK ! 
+
+  - Show command 'switch' : 
+   
+   > `branch# ovs-vsctl show `
+   
+   output :
+   
+    95d1e1cf-ac2d-42c2-8cf3-bb4d33410d06
+    Bridge switch
+        Port "7d8dc0e0b8a94_l"
+            tag: 10
+            Interface "7d8dc0e0b8a94_l"
+        Port vx1
+            Interface vx1
+                type: vxlan
+                options: {remote_ip="172.16.1.3"}
+        Port cfd7366b9d094_l
+            tag: 20
+            Interface cfd7366b9d094_l
+        Port d598773a8d824_l
+            tag: 10
+            Interface d598773a8d824_l
+        Port b79e5c6d4ba74_l
+            tag: 20
+            Interface b79e5c6d4ba74_l
+        Port switch
+            Interface switch
+                type: internal
+    ovs_version: "2.13.0"
+    
+    
+ - Checking VXLAN tunnel ( client1 ping VLAN10 interfaces and client2 ping VLAN20 interfaces ) in below video
+ - Checking Overlay Routing ( Client1 in VLAN10 ping client2 in VLAN20 ) in below video 
+ - http request from client1 to webserver and checking Overloading Encapsulation :
+   > `client1# curl http://1.1.1.2 `
+   
+   Wireshark capture : 
+   
+![Checkping ](WiresharkCap/overload.png)
+
+### OMG !!! 14 encapsulations, Big concequence on QoS 
+   
+ 
+## Demonstration :
+
+
+   
+[![](http://img.youtube.com/vi/QQhysH0IN58/0.jpg)](http://www.youtube.com/watch?v=QQhysH0IN58 "Overloading Encapsulation with VXLAN, IPsec, MPLS/VPN6, GNS3, StrongSwan, ubuntu server (Part. I)")
+
+
+In next post i gonna show how to encrypt all of this with IPsec ESP using StrongSwan !!!
+
+
+    
+    
+    
+    
+
+   
+   
+
+   
+        
+   
+   
+  
+     
+    
+    
+    
+   
+   
+   
+   
+
+    
+     
+   
+   
+   
+    
+    
+    
+    
+       
+       
+       
+       
+    
+    
+    
+    
+    
+    
+        
   
  
  
